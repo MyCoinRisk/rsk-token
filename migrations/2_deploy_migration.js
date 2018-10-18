@@ -26,14 +26,15 @@ module.exports = function(deployer, network, accounts) {
       false
     );
 
-    var ts = new Date().getTime();
-    console.log(Math.round(ts/1000));
-    var v = instance.transferableTokens(accounts[1], Math.round(ts/1000));
-    console.log(v);
-
-
     return instance;
     // return instance.batchTransfer(accounts);
+  })
+  .then(function(instance){
+    return instance.transferableTokens(accounts[5], Math.round(new Date().getTime() / 1000));
+  })
+  .then(function(value) {
+    console.log('-----------');
+    console.log(value.toNumber());
   });
 
   // RSKToken.deployed().then(function(instance) {

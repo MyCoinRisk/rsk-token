@@ -30,9 +30,7 @@ contract RSKToken is VestedToken, Ownable {
         for(uint256 i = 0; i < _tos.length; i++) {
             if (_vals[i] > 0) {
                 transfer(_tos[i], _vals[i]);
-                // transfer(_tos[i], _vals[i] * (10 ** uint256(decimals)));
             }
-            // transfer(_tos[i], balanceOf(owner)/_tos.length); 
         }
         return true;
     }
