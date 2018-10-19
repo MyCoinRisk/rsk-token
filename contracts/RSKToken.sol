@@ -20,7 +20,9 @@ contract RSKToken is VestedToken, Ownable {
     }
 
     /**
-     * Batch transfer onlyOwner
+     * @dev Batch transfer
+     * @param _tos address The address array which the tokens will be transfered to.
+     * @param _vals uint256 The amount of tokens to be transfered.
      */
     function batchTransfer(address[] _tos, uint256[] _vals) onlyOwner public returns (bool) {
         require(_tos.length > 0);
@@ -34,15 +36,5 @@ contract RSKToken is VestedToken, Ownable {
         }
         return true;
     }
-
-    // test balanceOf
-    function testBalanceOf() public constant returns (uint256) {
-        return balanceOf(this);
-    }
-
-    function ownerBalanceOf() public constant returns (uint256) {
-        return balanceOf(owner);
-    }
-
 }
 
