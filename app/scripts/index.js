@@ -51,11 +51,12 @@ const App = {
   refreshBalance: function () {
     const self = this
 
-    let meta
+    let rskToken
     RSKToken.deployed().then(function (instance) {
-      meta = instance
-      return meta.
-      return meta.getBalance.call(account, { from: account })
+      rskToken = instance
+      return rskToken.balanceOf(account)
+      // return rskToken.balanceOf.call(account, {from: account})
+      // return meta.getBalance.call(account, { from: account })
     }).then(function (value) {
       const balanceElement = document.getElementById('balance')
       balanceElement.innerHTML = value.valueOf()
@@ -74,9 +75,9 @@ const App = {
     this.setStatus('Initiating transaction... (please wait)')
 
     let meta
-    MetaCoin.deployed().then(function (instance) {
+    RSKToken.deployed().then(function (instance) {
       meta = instance
-      return meta.sendCoin(receiver, amount, { from: account })
+      return meta.transfer(receiver, amount, { from: account })
     }).then(function () {
       self.setStatus('Transaction complete!')
       self.refreshBalance()
