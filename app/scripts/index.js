@@ -55,7 +55,7 @@ const App = {
     RSKToken.deployed().then(function (instance) {
       rskToken = instance
       // return rskToken.balanceOf(account)
-      console.log(account)
+      // console.log(account)
       return rskToken.balanceOf.call(account, {from: account})
     }).then(function (value) {
       const balanceElement = document.getElementById('balance')
