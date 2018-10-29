@@ -5,15 +5,22 @@ import "truffle/DeployedAddresses.sol";
 import "../contracts/RSKToken.sol";
 
 contract TestRSKToken {
-    RSKToken rskToken = RSKToken(DeployedAddresses.RSKToken());
-    uint256 public constant INITIAL_SUPPLY = 20000 * (10 ** uint256(18));
 
+    function testInitialBalanceUsingDeployedContract() {
+        RSKToken rskToken = RSKToken(DeployedAddresses.RSKToken());
 
-    function testRSKToken() public {
-        address owner = rskToken.owner();
-
-        Assert.equal(INITIAL_SUPPLY, rskToken.balanceOf(owner), "should be equal");
-
+        uint256 expected = 20000 * (10 ** uint256(18));
+        Assert.equal(rskToken.balanceOf(tx.origin), expected, "Owner should have 20000 * 10^18 RSKCoin initially");
     }
+
+    function testInitialBalanceWithNewMetaCoin() {
+        RSKToken rskToken = new RSKToken();
+
+        uint256 expected = 20000 * (10 ** uint256(18));
+
+        Assert.equal(rskToken.balanceOf(tx.origin), expected, "Owner should have 20000 * 10^18 RSKCoin initially");
+    }
+
+
 
 }
