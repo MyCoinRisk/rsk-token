@@ -70,19 +70,16 @@ const App = {
 
     const amount = parseInt(document.getElementById('amount').value)
     const receiver = document.getElementById('receiver').value
-    let sender = document.getElementById('sender').value
-
-    if (!web3.isAddress(sender)) {
-      sender = account;
-    }
 
     this.setStatus('Initiating transaction... (please wait)')
 
     let rskToken
     RSKToken.deployed().then(function (instance) {
       rskToken = instance
-      return rskToken.transferFrom(sender, receiver, amount, { from: sender })
-      // return rskToken.transfer(receiver, amount, { from: account })
+      console.log(receiver, amount)
+      
+      // return rskToken.transferFrom(sender, receiver, amount, { from: account })
+      return rskToken.transfer(receiver, amount, { from: account })
     }).then(function () {
       self.setStatus('Transaction complete!')
       self.refreshBalance()
