@@ -46,7 +46,7 @@ contract RSkVestedToken is StandardToken, LimitedTransferToken {
     ) public {
 
         // Check for data inconsistencies that may cause unexpected behavior
-        require(_cliff >= _start && _vesting >= _cliff && _lockPeriod >= 0);
+        require(_cliff >= _start && _vesting >= _cliff && _value > 0);
 
         // To prevent a user being spammed and have his balance locked (out of gas attack when calculating vesting).
         require(tokenGrantsCount(_to) < MAX_GRANTS_PER_ADDRESS);

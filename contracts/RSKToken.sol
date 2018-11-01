@@ -9,7 +9,7 @@ contract RSKToken is StandardToken {
 
     uint8 public constant decimals = 18;
 
-    uint256 public constant INITIAL_SUPPLY = 2000000000 * (10 ** uint256(decimals));
+    uint256 public constant INITIAL_SUPPLY = 20 * 1000 * 1000 * 1000 * (10 ** uint256(decimals));
 
     /**
      * Constructor that gives msg.sender all of existing tokens
