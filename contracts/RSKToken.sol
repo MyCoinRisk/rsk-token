@@ -14,10 +14,12 @@ contract RSKToken is StandardToken {
     /**
      * Constructor that gives msg.sender all of existing tokens
      */
-    function RSKToken() {
+    constructor() public {
         totalSupply = INITIAL_SUPPLY;
         balances[msg.sender] = INITIAL_SUPPLY;
     }
+//    function RSKToken() public {
+//    }
 
 }
 

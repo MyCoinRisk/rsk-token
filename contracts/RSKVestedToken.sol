@@ -1,6 +1,8 @@
 pragma solidity ^0.4.23;
 import "zeppelin/token/StandardToken.sol";
 import "zeppelin/token/LimitedTransferToken.sol";
+import "zeppelin/math/Math.sol";
+
 
 contract RSkVestedToken is StandardToken, LimitedTransferToken {
 
@@ -20,7 +22,7 @@ contract RSkVestedToken is StandardToken, LimitedTransferToken {
 
     mapping (address => TokenGrant[]) public grants;
 
-    event NewTokenGrant(address indexed from, address indexed to, uint256 value, uint256 grantId);
+    event NewRSKTokenGrant(address indexed from, address indexed to, uint256 value, uint256 grantId);
 
     /**
      * @dev Grant tokens to a specified address
@@ -64,7 +66,7 @@ contract RSkVestedToken is StandardToken, LimitedTransferToken {
 
         transfer(_to, _value);
 
-        NewTokenGrant(msg.sender, _to, _value, count - 1);
+        NewRSKTokenGrant(msg.sender, _to, _value, count - 1);
     }
 
     /**
