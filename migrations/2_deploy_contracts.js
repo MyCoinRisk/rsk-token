@@ -1,6 +1,8 @@
 var RSKToken = artifacts.require("./RSKToken.sol");
+var RSKVestedToken = artifacts.require("./RSKVestedToken.sol")
 
 module.exports = function(deployer, network, accounts) {
-  return deployer.deploy(RSKToken);
+  deployer.deploy(RSKToken);
+  deployer.deploy(RSKVestedToken);
 };
 
