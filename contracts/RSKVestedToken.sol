@@ -4,6 +4,14 @@ import "zeppelin/token/LimitedTransferToken.sol";
 import "zeppelin/math/Math.sol";
 
 
+
+/*
+    Based on VestedToken.sol from https://github.com/OpenZeppelin/zeppelin-solidity
+
+    Slightly modified Zeppelin's Vested Token
+    Add Lockup period during Vesting
+*/
+
 contract RSkVestedToken is StandardToken, LimitedTransferToken {
 
     uint256 MAX_GRANTS_PER_ADDRESS = 20;
