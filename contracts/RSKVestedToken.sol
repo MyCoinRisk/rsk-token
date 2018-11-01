@@ -30,7 +30,7 @@ contract RSkVestedToken is StandardToken, LimitedTransferToken {
 
     mapping (address => TokenGrant[]) public grants;
 
-    event NewRSKTokenGrant(address indexed from, address indexed to, uint256 value, uint256 grantId);
+    event NewTokenGrant(address indexed from, address indexed to, uint256 value, uint256 grantId);
 
     /**
      * @dev Grant tokens to a specified address
@@ -74,7 +74,7 @@ contract RSkVestedToken is StandardToken, LimitedTransferToken {
 
         transfer(_to, _value);
 
-        NewRSKTokenGrant(msg.sender, _to, _value, count - 1);
+        NewTokenGrant(msg.sender, _to, _value, count - 1);
     }
 
     /**
