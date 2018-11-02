@@ -1,2 +1,2 @@
-# RSKToken
+# rsk-token
 RSK Token
