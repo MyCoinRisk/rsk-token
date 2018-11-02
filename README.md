@@ -1,2 +1,2 @@
 # rsk-token
-RSK Token
+RSKToken smart contract
