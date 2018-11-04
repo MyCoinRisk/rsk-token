@@ -23,7 +23,7 @@ contract('RSKVestedToken', async (accounts) => {
         assert.equal(await token.transferableTokens(receiver, now), tokenAmount);
     });
 
-    contract('getting a revokable/non-burnable token grant', async () =>{
+    contract('getting a revokable/non-burnable token grant', async () => {
         const cliff = 10000;
         const vesting = 20000; //seconds
 
