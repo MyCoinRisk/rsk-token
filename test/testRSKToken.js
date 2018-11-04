@@ -13,7 +13,8 @@ contract('RskToken', async (accounts) => {
       let accountOne = accounts[0];
       let accountTwo = accounts[1];
 
-      let amount = web3.toWei('100', 'ether');
+      let amount = 100;
+      // let amount = 10000;
 
       let instance = await RSKToken.deployed();
       let rskToken = instance;
@@ -32,8 +33,12 @@ contract('RskToken', async (accounts) => {
       balance = await rskToken.balanceOf.call(accountTwo);
       let accountTwoEndingBalance = balance.toNumber();
 
-      assert.equal(accountOneEndingBalance, accountOneStartingBalance - amount, "Amount wasn't correctly taken from the sender");
-      assert.equal(accountTwoEndingBalance, accountTwoStartingBalance + amount, "Amount wasn't correctly taken from the sender");
+      // console.log(amount)
+      // console.log(accountOneEndingBalance, accountOneStartingBalance - amount)
+      // console.log(accountTwoEndingBalance, accountTwoStartingBalance + amount)
+
+      assert.equal(accountOneEndingBalance, accountOneStartingBalance - amount, "Amount wasn't correctly taken from AccountOne");
+      assert.equal(accountTwoEndingBalance, accountTwoStartingBalance + amount, "Amount wasn't correctly taken from AccountTwo");
 
   });
 
