@@ -1,5 +1,5 @@
 {
-  "name": "tutorialtoken",
+  "name": "rsk-token",
   "version": "1.0.0",
   "description": "",
   "main": "truffle.js",
@@ -14,5 +14,8 @@
   "license": "ISC",
   "devDependencies": {
     "lite-server": "^2.3.0"
+  },
+  "dependencies": {
+    "openzeppelin-solidity": "^2.0.0"
   }
 }
