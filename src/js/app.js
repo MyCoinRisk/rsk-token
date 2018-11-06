@@ -13,7 +13,7 @@ App = {
       web3 = new Web3(web3.currentProvider);
     } else {
       // set the provider you want from Web3.providers
-      App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:9545');
+      App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
       web3 = new Web3(App.web3Provider);
     }
 
@@ -21,13 +21,13 @@ App = {
   },
 
   initContract: function() {
-    $.getJSON('TutorialToken.json', function(data) {
+    $.getJSON('RskCrowdsale.json', function(data) {
       // Get the necessary contract artifact file and instantiate it with truffle-contract.
-      var TutorialTokenArtifact = data;
-      App.contracts.TutorialToken = TruffleContract(TutorialTokenArtifact);
+      var RskCrowdsaleArtifact = data;
+      App.contracts.RskCrowdsale = TruffleContract(RskCrowdsaleArtifact);
 
       // Set the provider for our contract.
-      App.contracts.TutorialToken.setProvider(App.web3Provider);
+      App.contracts.RskCrowdsale.setProvider(App.web3Provider);
 
       // Use our contract to retieve and mark the adopted pets.
       return App.getBalances();
@@ -57,7 +57,7 @@ App = {
 
       var account = accounts[0];
 
-      App.contracts.TutorialToken.deployed().then(function(instance) {
+      App.contracts.RskCrowdsale.deployed().then(function(instance) {
         tutorialTokenInstance = instance;
 
         return tutorialTokenInstance.transfer(toAddress, amount, {from: account, gas: 100000});
@@ -73,7 +73,7 @@ App = {
   getBalances: function() {
     console.log('Getting balances...');
 
-    var tutorialTokenInstance;
+    var rskCrowdsaleInstance;
 
     web3.eth.getAccounts(function(error, accounts) {
       if (error) {
@@ -82,16 +82,21 @@ App = {
 
       var account = accounts[0];
 
-      App.contracts.TutorialToken.deployed().then(function(instance) {
-        tutorialTokenInstance = instance;
 
-        return tutorialTokenInstance.balanceOf(account);
-      }).then(function(result) {
-        balance = result.c[0];
+      App.contracts.RskCrowdsale.deployed().then(function(instance) {
+          console.log("instance address:", instance.address);
 
-        $('#TTBalance').text(balance);
-      }).catch(function(err) {
-        console.log(err.message);
+        rskCrowdsaleInstance = instance;
+
+        console.log("token address:", rskCrowdsaleInstance.token().address);
+
+        // return rskCrowdsaleInstance.balanceOf(account);
+      // }).then(function(result) {
+      //   balance = result.c[0];
+      //
+      //   $('#TTBalance').text(balance);
+      // }).catch(function(err) {
+      //   console.log(err.message);
       });
     });
   }
