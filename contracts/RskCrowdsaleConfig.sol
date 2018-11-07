@@ -23,7 +23,7 @@ contract RskCrowdsaleConfig {
     uint256 public constant FOUNDATION_POOL_TOKENS = 12 * 1000 * 1000 * 1000 * MIN_TOKEN_UNIT;
 
     // Contract wallet addresses for initial allocation
-    // todo only for testing, need config correct address when deploy into eth
+    // TODO: only for testing, need config correct address when deploy into eth
     address public constant EMPLOYEES_VESTING_ADDR = 0xB2342413987FcC8381278DA88BD6c2121D40Cb12;
     address public constant ADVISORS_VESTING_ADDR = 0xD1218079b0614d798C1f6EBe0112eB9C44823525;
     address public constant PATTERNS_LOCK_ADDR = 0x76721FE8142CA9c4611b6390996D3Ac91b0d29FA;
