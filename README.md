@@ -20,7 +20,7 @@
 
   ```markdown
   # 修改RskCrowdsaleConfig对应的address
-  # 配置truffle.js为eth mainet环境，使用truffle deploy到eth mainet
+  # 配置truffle.js为eth mainnet环境，使用truffle deploy到eth mainnet
   ```
 
 ##### RSK Token的分配表格
