@@ -44,4 +44,3 @@
 ##### 参考链接
 
 - [OpenZeppelin/openzepelin-solidity](https://github.com/OpenZeppelin/openzeppelin-solidity)
-- [rsk-token gitlab](https://doc.flyflyfish.com/gitlab/ailares/token/rsk-token)
