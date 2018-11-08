@@ -16,6 +16,8 @@
     "lite-server": "^2.3.0"
   },
   "dependencies": {
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "openzeppelin-solidity": "^2.0.0"
   }
 }
