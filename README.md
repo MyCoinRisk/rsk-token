@@ -28,7 +28,7 @@
 |     Wallet      | Number of Tokens | Percent |  Lockup   |                    Vesting                    |
 | :-------------: | :--------------: | :-----: | :-------: | :-------------------------------------------: |
 |    Employees    |   300,000,000    |  15.0%  |     -     | lock up for 12 months, quaterly for 48 months |
-|    Advisors     |   110,000,000    |  5.5%   |     -     |  lockup for 3 months, quaterly for 24 months  |
+|    Advisors     |   110,000,000    |  5.5%   |     -     | lock up for 3 months, quaterly for 24 months  |
 |    Patterns     |   150,000,000    |  7.5%   | 3 months  |                       -                       |
 | Ailares/Company |   240,000,000    |  12.0%  | 12 months |                       -                       |
 |    Fundation    |  1,200,000,000   |  60.0%  |     -     |                       -                       |
