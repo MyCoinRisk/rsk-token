@@ -33,7 +33,7 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
      * @param _startTime - Unix timestamp representing
      */
     constructor(uint64 _startTime) public {
-        require(_startTime > now);
+        require(_startTime >= now);
 
         startTime = _startTime;
 

@@ -24,11 +24,11 @@ contract RskCrowdsaleConfig {
 
     // Contract wallet addresses for initial allocation
     // TODO: only for testing, need config correct address when deploy into eth
-    address public constant EMPLOYEES_VESTING_ADDR = 0x91e16D8aB6BeD42142Dcc356fC0cb03AB6D69E1d;
-    address public constant ADVISORS_VESTING_ADDR = 0x0f9F21eb88B651cB8ce901c36d34A76B62E74349;
-    address public constant PATTERNS_LOCK_ADDR = 0xFA845C887943AB644876a6096da79A979eEEcC34;
-    address public constant COMPANY_LOCK_ADDR = 0x21E47C795Ca033cE98AD4Eea203844ca036786D9;
-    address public constant FOUNDATION_POOL_ADDR = 0xB997088DbED10a4281b38D7616b56Fcc6739DAc3;
+    address public constant EMPLOYEES_VESTING_ADDR = 0x5Db5F81a812332be866757cEE16a2600bc884cd7;
+    address public constant ADVISORS_VESTING_ADDR = 0xb054649d2c1B357449644dC384D55750E5Cd0f35;
+    address public constant PATTERNS_LOCK_ADDR = 0x16487552efDedd6b417D760e63E2E0e83aac6435;
+    address public constant COMPANY_LOCK_ADDR = 0x113603907Bd7088e520eCF8D3a9Dd60FdD12622C;
+    address public constant FOUNDATION_POOL_ADDR = 0x17817f0131ef31aeDdC0C727f934AD27cC18e812;
 
     // 3 month period, in seconds
     uint64 public constant ONE_QUATER_PERIOD = 7776000;
