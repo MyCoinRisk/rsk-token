@@ -16,11 +16,11 @@
   - Fundation Wallet
   ```
 
-- 配置eth mainne和deploy
+- 配置eth mainnet和deploy
 
   ```markdown
   # 修改RskCrowdsaleConfig对应的address
-  # 配置truffle.js为eth mainet环境，使用truffle deploy到eth mainet
+  # 配置truffle.js为eth mainnet环境，使用truffle deploy到eth mainnet
   ```
 
 ##### RSK Token的分配表格
@@ -28,7 +28,7 @@
 |     Wallet      | Number of Tokens | Percent |  Lockup   |                    Vesting                    |
 | :-------------: | :--------------: | :-----: | :-------: | :-------------------------------------------: |
 |    Employees    |   300,000,000    |  15.0%  |     -     | lock up for 12 months, quaterly for 48 months |
-|    Advisors     |   110,000,000    |  5.5%   |     -     |  lockup for 3 months, quaterly for 24 months  |
+|    Advisors     |   110,000,000    |  5.5%   |     -     | lock up for 3 months, quaterly for 24 months  |
 |    Patterns     |   150,000,000    |  7.5%   | 3 months  |                       -                       |
 | Ailares/Company |   240,000,000    |  12.0%  | 12 months |                       -                       |
 |    Fundation    |  1,200,000,000   |  60.0%  |     -     |                       -                       |
@@ -44,4 +44,3 @@
 ##### 参考链接
 
 - [OpenZeppelin/openzepelin-solidity](https://github.com/OpenZeppelin/openzeppelin-solidity)
-- [rsk-token gitlab](https://doc.flyflyfish.com/gitlab/ailares/token/rsk-token)
