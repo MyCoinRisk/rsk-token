@@ -16,7 +16,7 @@
   - Fundation Wallet
   ```
 
-- 配置eth mainne和deploy
+- 配置eth mainnet和deploy
 
   ```markdown
   # 修改RskCrowdsaleConfig对应的address
