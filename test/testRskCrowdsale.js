@@ -14,35 +14,48 @@ contract('RskCrowdsale', async (accounts) => {
     const [owner, other] = accounts;
     // console.log(owner, other);
 
-    let rskCrowdsale;
-    let aToken;
-    let token;
-
-    async function balanceOf(address) {
+    async function balanceOf(token, address) {
         return Math.round(web3.fromWei( await token.balanceOf(address), "ether").toNumber());
     }
 
+    function vestedAmount(total, now, start, cliffDuration, duration) {
+        return (now < start + cliffDuration) ? 0 : Math.round(total * (now - start) / duration);
+    }
+
     beforeEach(async () => {
-        rskCrowdsale = await RskCrowdsale.new(await time.latest() + time.duration.minutes(1));
-        console.log("rskCrowdsale address=", rskCrowdsale.address);
+        this.starTime = await time.latest() + time.duration.minutes(1);
+        this.rskCrowdsale = await RskCrowdsale.new(this.starTime);
+        this.aToken = await this.rskCrowdsale.token();
+        this.token = RskToken.at(this.aToken);
 
-        aToken = await rskCrowdsale.token();
-        token = RskToken.at(aToken);
-
-        console.log("token address=", token.address);
+        // console.log("rskCrowdsale address=", rskCrowdsale.address);
+        // console.log("token address=", token.address);
     });
 
     contract('tokens allocation', () => {
         it ('sets owner on deploy', async () => {
-            expect(await rskCrowdsale.owner()).to.equal(owner);
+            expect(await this.rskCrowdsale.owner()).to.equal(owner);
         });
 
-        it('should put 12 billion RskToken in the fifth account', async () => {
+        it('should put 12 billion RskToken in foundation address', async () => {
             let amount = 12 * 1000 * 1000 * 1000;
-            expect(await balanceOf(accounts[5])).to.equal(amount);
+            expect(await balanceOf(this.token, accounts[5])).to.equal(amount);
         });
 
-        
+        it('employees tokens can release after vesting', async () => {
+            let amount = 3 * 1000 * 1000 * 1000;
+            let aEmployees = await this.rskCrowdsale.employeesVesting();
+
+            console.log(aEmployees);
+
+            expect(await balanceOf(this.token, aEmployees)).to.equal(amount);
+
+            await time.increaseTo(this.starTime + time.duration.years(4));
+            await this.rskCrowdsale.releaseVestingEmployees();
+            //
+            // expect(await balanceOf(accounts[1])).to.equal(amount);
+        });
+
 
     });
 

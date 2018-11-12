@@ -42,19 +42,20 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
         token.mint(address(this), TOTAL_SUPPLY_CAP);
 
         // Set a quarter , a year, 4 years after startTime, respectively
-        uint64 quaterPeriod = uint64(startTime + ONE_QUATER_PERIOD);
-        uint64 yearPeriod = uint64(startTime + ONE_YEAR_PERIOD);
-        uint64 twoYearPeriod = uint64(startTime + 2 * ONE_YEAR_PERIOD);
-        uint64 fourYearPeriod = uint64(startTime + 4 * ONE_YEAR_PERIOD);
+        uint64 quaterLock = uint64(startTime + ONE_QUATER_PERIOD);
+        uint64 yearLock = uint64(startTime + ONE_YEAR_PERIOD);
+
+//        uint64 twoYearPeriod = uint64(startTime + 2 * ONE_YEAR_PERIOD);
+//        uint64 fourYearPeriod = uint64(startTime + 4 * ONE_YEAR_PERIOD);
 
 
         // Instantiation of token timelock
-        patternsTimelock = new TokenTimelock(token, PATTERNS_LOCK_ADDR, quaterPeriod);
-        companyTimelock = new TokenTimelock(token, COMPANY_LOCK_ADDR, yearPeriod);
+        patternsTimelock = new TokenTimelock(token, PATTERNS_LOCK_ADDR, quaterLock);
+        companyTimelock = new TokenTimelock(token, COMPANY_LOCK_ADDR, yearLock);
 
         // Instantiation of token vesting
-        employeesVesting = new TokenVesting(EMPLOYEES_VESTING_ADDR, startTime, yearPeriod, fourYearPeriod, true);
-        advisorsVesting = new TokenVesting(ADVISORS_VESTING_ADDR, startTime, quaterPeriod, twoYearPeriod, true);
+        employeesVesting = new TokenVesting(EMPLOYEES_VESTING_ADDR, startTime, ONE_YEAR_PERIOD, 4 * ONE_YEAR_PERIOD, true);
+        advisorsVesting = new TokenVesting(ADVISORS_VESTING_ADDR, startTime, ONE_QUATER_PERIOD, 2 * ONE_YEAR_PERIOD, true);
 
         // Genesis allocation of tokens
         token.safeTransfer(FOUNDATION_POOL_ADDR, FOUNDATION_POOL_TOKENS);
