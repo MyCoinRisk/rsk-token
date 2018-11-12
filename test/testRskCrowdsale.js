@@ -27,8 +27,11 @@ contract('RskCrowdsale', async (accounts) => {
         await RskCrowdsale.new(now() + day)
             .then((instance) => {
                 rskCrowdsale = instance;
-                token = instance.token();
                 console.log("address:", instance.address);
+                return instance.token();
+            }).then((_token) => {
+                token = _token;
+                console.log("token:", token);
             });
     });
 
@@ -39,7 +42,13 @@ contract('RskCrowdsale', async (accounts) => {
 
         it('should put 20 billion RskToken in the first account', async () => {
             let amount = 20 * 1000 * 1000 * 1000;
-            expect(balanceOf(accounts[0])).to.equal(amount);
+            console.log("token address:", token);
+            let balance = await token.balanceOf(accounts[0]);
+
+            console.log(balance);
+
+            // console.log( balanceOf(accounts[0]) );
+            // expect(balanceOf(accounts[0])).to.equal(amount);
         });
     });
 

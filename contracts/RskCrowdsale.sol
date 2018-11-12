@@ -39,6 +39,7 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
 
         // mints all possible tokens to crowdsale contract
         token = new RskToken(TOTAL_SUPPLY_CAP);
+        token.mint(address(this), TOTAL_SUPPLY_CAP);
 
         // Set a quarter , a year, 4 years after startTime, respectively
         uint64 quaterPeriod = uint64(startTime + ONE_QUATER_PERIOD);
