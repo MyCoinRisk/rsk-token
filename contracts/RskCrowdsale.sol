@@ -4,6 +4,7 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/TokenTimelock.sol";
 import "openzeppelin-solidity/contracts/drafts/TokenVesting.sol";
+import "openzeppelin-solidity/contracts/math/Math.sol";
 import "./RskToken.sol";
 import "./RskCrowdsaleConfig.sol";
 
@@ -24,6 +25,17 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
     // TokenVesting
     TokenVesting[10] public employeesVesting;
     TokenVesting[9] public advisorsVesting;
+
+    modifier verifyEmployeeIdx(uint256 idx) {
+        require(idx >= 0 && idx < employeesVesting.length);
+        _;
+    }
+
+    modifier verifyAdvisorIdx(uint256 idx) {
+        require(idx >= 0 && idx < advisorsVesting.length);
+        _;
+    }
+
 
     /**
      * @dev RSKTokenAllocate contract constructor
@@ -65,19 +77,18 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
     function initEmployeesVesting(address[] _tos, uint256[] _vals) onlyOwner public {
         require(_tos.length > 0);
         require(_tos.length == _vals.length);
-        for(uint256 i = 0; i < employeesVesting.length; i++) {
+        uint256 length = Math.min(_tos.length, employeesVesting.length);
+        for(uint256 i = 0; i < length; i++) {
             employeesVesting[i] = createEmployeeVesting(_tos[i], _vals[i]);
         }
     }
 
-    function releaseEmployeeVesting(uint256 vestId) public {
-        require(vestId > 0 && vestId < employeesVesting.length);
+    function releaseEmployeeVesting(uint256 vestId) verifyEmployeeIdx(vestId) public {
         TokenVesting vesting = employeesVesting[vestId];
         vesting.release(token);
     }
 
-    function revokeEmployeeVesting(uint256 vestId) onlyOwner public {
-        require(vestId > 0 && vestId < employeesVesting.length);
+    function revokeEmployeeVesting(uint256 vestId) verifyEmployeeIdx(vestId) onlyOwner public {
         TokenVesting vesting = employeesVesting[vestId];
         // Token of vesting will return to owner() of vesting contract
         vesting.revoke(token);
@@ -99,19 +110,18 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
     function initAdvisorsVesting(address[] _tos, uint256[] _vals) onlyOwner public {
         require(_tos.length > 0);
         require(_tos.length == _vals.length);
-        for (uint256 i = 0; i < advisorsVesting.length; i++) {
+        uint256 length = Math.min(_tos.length, advisorsVesting.length);
+        for (uint256 i = 0; i < length; i++) {
             advisorsVesting[i] = createAdvisorVesting(_tos[i], _vals[i]);
         }
     }
 
-    function releaseAdvisorVesting(uint256 vestId) public {
-        require(vestId > 0 && vestId < advisorsVesting.length);
+    function releaseAdvisorVesting(uint256 vestId) verifyAdvisorIdx(vestId) public {
         TokenVesting vesting = advisorsVesting[vestId];
         vesting.release(token);
     }
 
-    function revokeAdvisorVesting(uint256 vestId) onlyOwner public {
-        require(vestId > 0 && vestId < advisorsVesting.length);
+    function revokeAdvisorVesting(uint256 vestId) verifyAdvisorIdx(vestId) onlyOwner public {
         TokenVesting vesting = advisorsVesting[vestId];
         // Token of vesting will return to owner() of vesting contract
         vesting.revoke(token);
@@ -123,5 +133,13 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
         _vesting.transferOwnership(owner());
 
         token.safeTransfer(_vesting, _amount);
+    }
+
+    function getEmployeeVesting(uint256 vestId) verifyEmployeeIdx(vestId) public view returns (TokenVesting) {
+        return employeesVesting[vestId];
+    }
+
+    function getAdvisorVesting(uint256 vestId) verifyAdvisorIdx(vestId) public view returns (TokenVesting) {
+        return advisorsVesting[vestId];
     }
 }
