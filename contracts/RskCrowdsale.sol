@@ -18,15 +18,12 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
     // Token contract
     RskToken public token;
 
+    // Issue Token start time
     uint64 public startTime;
 
-    // TokenTimelock
-    TokenTimelock public patternsTimelock;
-    TokenTimelock public companyTimelock;
-
     // TokenVesting
-    TokenVesting public employeesVesting;
-    TokenVesting public advisorsVesting;
+    TokenVesting[10] public employeesVesting;
+    TokenVesting[9] public advisorsVesting;
 
     /**
      * @dev RSKTokenAllocate contract constructor
@@ -41,62 +38,90 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
         token = new RskToken(TOTAL_SUPPLY_CAP);
         token.mint(address(this), TOTAL_SUPPLY_CAP);
 
-        // Set a quarter , a year, 4 years after startTime, respectively
-        uint64 quaterLock = uint64(startTime + ONE_QUATER_PERIOD);
-        uint64 yearLock = uint64(startTime + ONE_YEAR_PERIOD);
-
-//        uint64 twoYearPeriod = uint64(startTime + 2 * ONE_YEAR_PERIOD);
-//        uint64 fourYearPeriod = uint64(startTime + 4 * ONE_YEAR_PERIOD);
-
-
-        // Instantiation of token timelock
-        patternsTimelock = new TokenTimelock(token, PATTERNS_LOCK_ADDR, quaterLock);
-        companyTimelock = new TokenTimelock(token, COMPANY_LOCK_ADDR, yearLock);
-
-        // Instantiation of token vesting
-        employeesVesting = new TokenVesting(EMPLOYEES_VESTING_ADDR, startTime, ONE_YEAR_PERIOD, 4 * ONE_YEAR_PERIOD, true);
-        advisorsVesting = new TokenVesting(ADVISORS_VESTING_ADDR, startTime, ONE_QUATER_PERIOD, 2 * ONE_YEAR_PERIOD, true);
-
         // Genesis allocation of tokens
         token.safeTransfer(FOUNDATION_POOL_ADDR, FOUNDATION_POOL_TOKENS);
-
-        // Allocation of vested tokens
-        token.safeTransfer(patternsTimelock, PATTERNS_LOCK_TOKENS);
-        token.safeTransfer(companyTimelock, COMPANY_LOCK_TOKENS);
-        token.safeTransfer(employeesVesting, EMPLOYEES_VESTING_TOKENS);
-        token.safeTransfer(advisorsVesting, ADVISORS_VESTING_TOKENS);
+        token.safeTransfer(COMPANY_POOL_ADDR, COMPANY_POOL_TOKENS);
     }
 
     /**
-     * @dev release time-locked tokens
+     * @dev init transfer
+     * @param _tos address[] The address array which the tokens will be transferred to.
+     * @param _vals uint256[] The amount of tokens to be transferred
      */
-    function releaseLockPatterns() public {
-        patternsTimelock.release();
+    function initTransfer(address[] _tos, uint256[] _vals) onlyOwner public {
+        require(_tos.length > 0);
+        require(_tos.length == _vals.length);
+
+        // Transfer
+        for(uint256 i = 0; i < _tos.length; i++) {
+            token.safeTransfer(_tos[i], _vals[i]);
+        }
+    }
+    /**
+     * @dev Init employeesVesting
+     * @param _tos address[]
+     * @param _vals uint256[]
+     */
+    function initEmployeesVesting(address[] _tos, uint256[] _vals) onlyOwner public {
+        require(_tos.length > 0);
+        require(_tos.length == _vals.length);
+        for(uint256 i = 0; i < employeesVesting.length; i++) {
+            employeesVesting[i] = createEmployeeVesting(_tos[i], _vals[i]);
+        }
     }
 
-    function releaseLockCompany() public {
-        companyTimelock.release();
+    function releaseEmployeeVesting(uint256 vestId) public {
+        require(vestId > 0 && vestId < employeesVesting.length);
+        TokenVesting vesting = employeesVesting[vestId];
+        vesting.release(token);
+    }
+
+    function revokeEmployeeVesting(uint256 vestId) onlyOwner public {
+        require(vestId > 0 && vestId < employeesVesting.length);
+        TokenVesting vesting = employeesVesting[vestId];
+        // Token of vesting will return to owner() of vesting contract
+        vesting.revoke(token);
+    }
+
+
+    function createEmployeeVesting(address _beneficiary, uint256 _amount) internal returns (TokenVesting _vesting) {
+        _vesting = new TokenVesting(_beneficiary, startTime, ONE_YEAR_PERIOD, 4 * ONE_YEAR_PERIOD, true);
+        // TODO For revoke ?
+        _vesting.transferOwnership(owner());
+
+        token.safeTransfer(_vesting, _amount);
     }
 
     /**
-     * @dev release vesting tokens
+     * @dev advisorsVesting
+     *
      */
-    function releaseVestingEmployees() public {
-        employeesVesting.release(token);
+    function initAdvisorsVesting(address[] _tos, uint256[] _vals) onlyOwner public {
+        require(_tos.length > 0);
+        require(_tos.length == _vals.length);
+        for (uint256 i = 0; i < advisorsVesting.length; i++) {
+            advisorsVesting[i] = createAdvisorVesting(_tos[i], _vals[i]);
+        }
     }
 
-    function releaseVestingAdvisors() public {
-        advisorsVesting.release(token);
+    function releaseAdvisorVesting(uint256 vestId) public {
+        require(vestId > 0 && vestId < advisorsVesting.length);
+        TokenVesting vesting = advisorsVesting[vestId];
+        vesting.release(token);
     }
 
-    /**
-     * @dev revoke vesting tokens
-     */
-    function revokeVestingEmployees() public onlyOwner {
-        employeesVesting.revoke(token);
+    function revokeAdvisorVesting(uint256 vestId) onlyOwner public {
+        require(vestId > 0 && vestId < advisorsVesting.length);
+        TokenVesting vesting = advisorsVesting[vestId];
+        // Token of vesting will return to owner() of vesting contract
+        vesting.revoke(token);
     }
 
-    function revokeVestingAdvisors() public onlyOwner {
-        advisorsVesting.revoke(token);
+    function createAdvisorVesting(address _beneficiary, uint256 _amount) internal returns (TokenVesting _vesting) {
+        _vesting = new TokenVesting(_beneficiary, startTime, ONE_QUATER_PERIOD, 2 * ONE_YEAR_PERIOD, true);
+        // TODO For revoke
+        _vesting.transferOwnership(owner());
+
+        token.safeTransfer(_vesting, _amount);
     }
 }
