@@ -127,22 +127,15 @@ contract('RskCrowdsale', async (accounts) => {
             let idx = 0;
             await time.increaseTo(this.starTime + time.duration.years(1) + time.duration.weeks(12));
 
+            let before = await balanceOf(this.token, this.rskCrowdsale.address);
             const vested = vestedAmount(eAmounts[idx], await time.latest(), this.starTime, time.duration.years(1), time.duration.years(4));
 
-            // let eVesting = TokenVesting.at(await this.rskCrowdsale.getEmployeeVesting(idx));
-            // await eVesting.revoke(this.token.address);
-            await this.rskCrowdsale.revokeEmployeeVesting(idx, {from: owner});
+            await this.rskCrowdsale.revokeEmployeeVesting(idx);
 
-            // expect(await balanceOf(this.token, this.rskCrowdsale.address)).to.equal(before + eAmounts[idx] - vested);
+            expect(await balanceOf(this.token, this.rskCrowdsale.address)).to.equal(before + eAmounts[idx] - vested);
 
             await logAccount(this.token, this.rskCrowdsale);
         });
-
-        it('test transfer', async () => {
-            console.log( web3.toWei(10, "ether") );
-            // await this.token.transfer(accounts[9], web3.toWei(10, 'ether'), {form: this.rskCrowdsale.address});
-        });
-
 
     });
 
