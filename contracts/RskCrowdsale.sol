@@ -24,7 +24,7 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
 
     // TokenVesting
     TokenVesting[10] public employeesVesting;
-    TokenVesting[9] public advisorsVesting;
+    TokenVesting[10] public advisorsVesting;
 
     modifier verifyEmployeeIdx(uint256 idx) {
         require(idx >= 0 && idx < employeesVesting.length);
@@ -55,11 +55,11 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
     }
 
     /**
-     * @dev init transfer
+     * @dev batch transfer
      * @param _tos address[] The address array which the tokens will be transferred to.
      * @param _vals uint256[] The amount of tokens to be transferred
      */
-    function initTransfer(address[] _tos, uint256[] _vals) onlyOwner public {
+    function batchTransfer(address[] _tos, uint256[] _vals) onlyOwner public {
         require(_tos.length > 0);
         require(_tos.length == _vals.length);
 
@@ -70,9 +70,9 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
     }
 
     /**
-     * @dev Init employeesVesting
-     * @param _tos address[]
-     * @param _vals uint256[]
+     * @dev Init EmployeesVesting
+     * @param _tos address[] The address array which the tokens will be vested;
+     * @param _vals uint256[] The amount of tokens to be vested
      */
     function initEmployeesVesting(address[] _tos, uint256[] _vals) onlyOwner public {
         require(_tos.length > 0);
@@ -83,29 +83,10 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
         }
     }
 
-    function releaseEmployeeVesting(uint256 vestId) verifyEmployeeIdx(vestId) public {
-        TokenVesting vesting = employeesVesting[vestId];
-        vesting.release(token);
-    }
-
-    function revokeEmployeeVesting(uint256 vestId) verifyEmployeeIdx(vestId) onlyOwner public {
-        TokenVesting vesting = employeesVesting[vestId];
-        // Token of vesting will return to owner() of vesting contract
-        vesting.revoke(token);
-    }
-
-
-    function createEmployeeVesting(address _beneficiary, uint256 _amount) internal returns (TokenVesting _vesting) {
-        _vesting = new TokenVesting(_beneficiary, startTime, ONE_YEAR_PERIOD, 4 * ONE_YEAR_PERIOD, true);
-        // TODO For revoke ?
-//        _vesting.transferOwnership(owner());
-
-        token.safeTransfer(_vesting, _amount);
-    }
-
     /**
-     * @dev advisorsVesting
-     *
+     * @dev Init AdvisorsVesting
+     * @param _tos address[] The address array which the tokens will be vested;
+     * @param _vals uint256[] The amount of tokens to be vested
      */
     function initAdvisorsVesting(address[] _tos, uint256[] _vals) onlyOwner public {
         require(_tos.length > 0);
@@ -116,30 +97,69 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
         }
     }
 
-    function releaseAdvisorVesting(uint256 vestId) verifyAdvisorIdx(vestId) public {
-        TokenVesting vesting = advisorsVesting[vestId];
+    /**
+     * @dev Release Employee Vesting By _vestId
+     * @param _vestId The vestId of employee vesting
+     */
+    function releaseEmployeeVesting(uint256 _vestId) verifyEmployeeIdx(_vestId) public {
+        TokenVesting vesting = employeesVesting[_vestId];
         vesting.release(token);
     }
 
-    function revokeAdvisorVesting(uint256 vestId) verifyAdvisorIdx(vestId) onlyOwner public {
-        TokenVesting vesting = advisorsVesting[vestId];
+    /**
+     * @dev Revoke Employee Vesting By _vestId
+     * @param _vestId The vestId of employee vesting
+     */
+    function revokeEmployeeVesting(uint256 _vestId) verifyEmployeeIdx(_vestId) onlyOwner public {
+        TokenVesting vesting = employeesVesting[_vestId];
         // Token of vesting will return to owner() of vesting contract
         vesting.revoke(token);
     }
 
-    function createAdvisorVesting(address _beneficiary, uint256 _amount) internal returns (TokenVesting _vesting) {
-        _vesting = new TokenVesting(_beneficiary, startTime, ONE_QUATER_PERIOD, 2 * ONE_YEAR_PERIOD, true);
-        // TODO For revoke
-        _vesting.transferOwnership(owner());
+    /**
+     * @dev Release Advisor Vesting By _vestId
+     * @param _vestId The vestId of employee vesting
+     */
+    function releaseAdvisorVesting(uint256 _vestId) verifyAdvisorIdx(_vestId) public {
+        TokenVesting vesting = advisorsVesting[_vestId];
+        vesting.release(token);
+    }
 
+    /**
+     * @dev Revoke Employee Vesting By _vestId
+     * @param _vestId The vestId of employee vesting
+     */
+    function revokeAdvisorVesting(uint256 _vestId) verifyAdvisorIdx(_vestId) onlyOwner public {
+        TokenVesting vesting = advisorsVesting[_vestId];
+        // Token of vesting will return to owner() of vesting contract
+        vesting.revoke(token);
+    }
+
+    /**
+     * @dev Create Employee Vesting
+     * @param _beneficiary The beneficiary of vesting
+     * @param _amount The amount of tokens
+     */
+    function createEmployeeVesting(address _beneficiary, uint256 _amount) internal returns (TokenVesting _vesting) {
+        _vesting = new TokenVesting(_beneficiary, startTime, ONE_YEAR_PERIOD, 4 * ONE_YEAR_PERIOD, true);
         token.safeTransfer(_vesting, _amount);
     }
 
-    function getEmployeeVesting(uint256 vestId) verifyEmployeeIdx(vestId) public view returns (TokenVesting) {
-        return employeesVesting[vestId];
+    /**
+     * @dev Create Advisor Vesting
+     * @param _beneficiary The beneficiary of vesting
+     * @param _amount The amount of tokens
+     */
+    function createAdvisorVesting(address _beneficiary, uint256 _amount) internal returns (TokenVesting _vesting) {
+        _vesting = new TokenVesting(_beneficiary, startTime, ONE_QUATER_PERIOD, 2 * ONE_YEAR_PERIOD, true);
+        token.safeTransfer(_vesting, _amount);
     }
 
-    function getAdvisorVesting(uint256 vestId) verifyAdvisorIdx(vestId) public view returns (TokenVesting) {
-        return advisorsVesting[vestId];
+    function getEmployeeVesting(uint256 _vestId) verifyEmployeeIdx(_vestId) public view returns (TokenVesting) {
+        return employeesVesting[_vestId];
+    }
+
+    function getAdvisorVesting(uint256 _vestId) verifyAdvisorIdx(_vestId) public view returns (TokenVesting) {
+        return advisorsVesting[_vestId];
     }
 }
