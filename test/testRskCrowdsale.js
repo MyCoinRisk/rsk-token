@@ -42,27 +42,29 @@ contract('RskCrowdsale', async (accounts) => {
         this.rskCrowdsale = await RskCrowdsale.new(this.starTime);
         this.token = RskToken.at(await this.rskCrowdsale.token());
 
-        this.rskCrowdsale.initTransfer(pAddrs, pAmounts);
-        this.rskCrowdsale.initEmployeesVesting(eAddrs, eAmounts);
-        this.rskCrowdsale.initAdvisorsVesting(aAddrs, aAmounts);
-
-        console.log(await this.rskCrowdsale.getEmployeeVesting(1));
-
-        // this.employeesVesting = TokenVesting.at(await this.rskCrowdsale.employeesVesting());
-        // this.advisorsVesting = TokenVesting.at(await this.rskCrowdsale.advisorsVesting());
-
-        // console.log("rskCrowdsale address=", rskCrowdsale.address);
-        // console.log("token address=", token.address);
+        await this.rskCrowdsale.initTransfer(pAddrs, pAmounts);
+        // await this.rskCrowdsale.initEmployeesVesting(eAddrs, eAmounts);
+        // await this.rskCrowdsale.initAdvisorsVesting(aAddrs, aAmounts);
     });
 
     contract('tokens allocation', () => {
         it ('sets owner on deploy', async () => {
+            console.log(owner, await this.rskCrowdsale.owner());
             expect(await this.rskCrowdsale.owner()).to.equal(owner);
         });
 
         it ('should put correct amount of RskToken in foundation and employee address', async () => {
+            console.log(accounts, pAddrs, pAmounts)
+
+
             expect(await balanceOf(this.token, foundationAddr)).to.equal(foundationAmount);
             expect(await balanceOf(this.token, companyAddr)).to.equal(companyAmount);
+
+            let i;
+            for (i = 0; i < accounts.length; i++) {
+                console.log(accounts[i], await balanceOf(this.token, accounts[i]));
+                // expect(await balanceOf(this.token, pAddrs[i])).to.equal(pAmounts[i]);
+            }
         });
 
         it ('cannot be released before cliff', async () => {
@@ -71,11 +73,22 @@ contract('RskCrowdsale', async (accounts) => {
         });
 
         it('employees tokens can release after vesting', async () => {
-
-            // expect(await balanceOf(this.token, this.employeesVesting)).to.equal(employeesAmount);
-            // expect(await balanceOf(this.token, this.advisorsVesting)).to.equal(advisorsAmount);
-            // expect(await balanceOf(this.token, employeesAddr)).to.equal(0);
+            // console.log(eAddrs, eAmounts);
             //
+            // let idx = 1;
+            //
+            // let eVesting0 = await this.rskCrowdsale.getEmployeeVesting(idx);
+            // console.log(eVesting0, await balanceOf(this.token, this.rskCrowdsale.address));
+            // console.log(await balanceOf(this.token, eAddrs[idx]), await balanceOf(this.token, eVesting0));
+            //
+            // expect(await balanceOf(this.token, eAddrs[idx])).to.equal(0);
+            // expect(await balanceOf(this.token, eVesting0)).to.equal(eAmounts[idx]);
+            //
+            // await time.increaseTo(this.starTime + time.duration.years(4));
+            //
+            // await this.rskCrowdsale.releaseEmployeeVesting(idx);
+            // expect(await balanceOf(this.token, eAddrs[idx])).to.equal(eAmounts[idx]);
+
             //
             // await time.increaseTo(this.starTime + time.duration.years(2));
             //

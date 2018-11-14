@@ -41,7 +41,10 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
      * @dev RSKTokenAllocate contract constructor
      * @param _startTime - Unix timestamp representing
      */
-    constructor(uint64 _startTime) public {
+    constructor(
+        uint64 _startTime
+    )
+    public {
         require(_startTime >= now);
 
         startTime = _startTime;
@@ -49,10 +52,6 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
         // mints all possible tokens to crowdsale contract
         token = new RskToken(TOTAL_SUPPLY_CAP);
         token.mint(address(this), TOTAL_SUPPLY_CAP);
-
-        // Genesis allocation of tokens
-        token.safeTransfer(FOUNDATION_POOL_ADDR, FOUNDATION_POOL_TOKENS);
-        token.safeTransfer(COMPANY_POOL_ADDR, COMPANY_POOL_TOKENS);
     }
 
     /**
@@ -66,9 +65,10 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
 
         // Transfer
         for(uint256 i = 0; i < _tos.length; i++) {
-            token.safeTransfer(_tos[i], _vals[i]);
+            token.safeTransfer(_tos[i], _vals[i] * MIN_TOKEN_UNIT);
         }
     }
+
     /**
      * @dev Init employeesVesting
      * @param _tos address[]
@@ -79,7 +79,7 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
         require(_tos.length == _vals.length);
         uint256 length = Math.min(_tos.length, employeesVesting.length);
         for(uint256 i = 0; i < length; i++) {
-            employeesVesting[i] = createEmployeeVesting(_tos[i], _vals[i]);
+            employeesVesting[i] = createEmployeeVesting(_tos[i], _vals[i] * MIN_TOKEN_UNIT);
         }
     }
 
@@ -98,7 +98,7 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
     function createEmployeeVesting(address _beneficiary, uint256 _amount) internal returns (TokenVesting _vesting) {
         _vesting = new TokenVesting(_beneficiary, startTime, ONE_YEAR_PERIOD, 4 * ONE_YEAR_PERIOD, true);
         // TODO For revoke ?
-        _vesting.transferOwnership(owner());
+//        _vesting.transferOwnership(owner());
 
         token.safeTransfer(_vesting, _amount);
     }
@@ -112,7 +112,7 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
         require(_tos.length == _vals.length);
         uint256 length = Math.min(_tos.length, advisorsVesting.length);
         for (uint256 i = 0; i < length; i++) {
-            advisorsVesting[i] = createAdvisorVesting(_tos[i], _vals[i]);
+            advisorsVesting[i] = createAdvisorVesting(_tos[i], _vals[i] * MIN_TOKEN_UNIT);
         }
     }
 
