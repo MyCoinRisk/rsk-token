@@ -72,11 +72,10 @@ contract('RskCrowdsale', async (accounts) => {
         });
     });
 
-    contract('token vesting', () => {
+    contract('employees vesting', () => {
 
         it ('cannot be released before cliff', async () => {
             await shouldFail.reverting(this.rskCrowdsale.releaseEmployeeVesting(0));
-            await shouldFail.reverting(this.rskCrowdsale.releaseAdvisorVesting(0));
         });
 
         it ('can be released after cliff', async () => {
@@ -139,5 +138,36 @@ contract('RskCrowdsale', async (accounts) => {
 
     });
 
+    contract('advisors vesting', () => {
+        it('cannot be released before cliff', async () => {
+            await shouldFail.reverting(this.rskCrowdsale.releaseAdvisorVesting(0))
+        });
+
+        it('can be released after cliff', async () => {
+            let idx = 0;
+            await time.increaseTo(this.starTime + time.duration.months(3) + time.duration.weeks(1));
+            await this.rskCrowdsale.releaseAdvisorVesting(idx);
+        });
+
+        it('should have released all after end', async () => {
+            for (let i = 0; i < aAddrs.length; i++) {
+                console.log(await balanceOf(this.token, aAddrs[i]), await balanceOf(this.token, await this.rskCrowdsale.getAdvisorVesting(i)));
+            }
+
+            let idx = 0;
+            let aVesting0 = await this.rskCrowdsale.getAdvisorVesting(idx);
+
+            expect(await balanceOf(this.token, aAddrs[idx])).to.equal(0);
+            expect(await balanceOf(this.token, aVesting0)).to.equal(aAmounts[idx]);
+
+            await time.increaseTo(this.startTime + time.duration.years(2));
+
+            let vesting = TokenVesting.at(aVesting0);
+            await vesting.release(this.token);
+            // await this.rskCrowdsale.releaseAdvisorVesting(idx);
+            // expect(await balanceOf(this.token, aAddrs[idx])).to.equal(aAmounts[idx]);
+            // expect(await balanceOf(this.token, eVesting0)).to.equal(0);
+        });
+    });
 
 });
