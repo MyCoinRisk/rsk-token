@@ -32,11 +32,11 @@ contract('RskCrowdsale', async (accounts) => {
         return Math.round(web3.fromWei( await token.balanceOf(address), "ether").toNumber());
     }
 
-    async function logAccount(token, rskCrowdsale) {
-        for (let i = 0; i < accounts.length; i++) {
-            console.log(accounts[i], await balanceOf(token, accounts[i]));
+    async function logAccount(token, _accounts) {
+        for (let i = 0; i < _accounts.length; i++) {
+            console.log(_accounts[i], await balanceOf(token, _accounts[i]));
         }
-        console.log(rskCrowdsale.address, await balanceOf(token, rskCrowdsale.address));
+        // console.log(rskCrowdsale.address, await balanceOf(token, rskCrowdsale.address));
     }
 
     function vestedAmount(total, now, start, cliffDuration, duration) {
@@ -58,7 +58,7 @@ contract('RskCrowdsale', async (accounts) => {
 
     contract('tokens allocation', () => {
         it('sets owner on deploy', async () => {
-            await logAccount(this.token, this.rskCrowdsale);
+            await logAccount(this.token, accounts);
             expect(await this.rskCrowdsale.owner()).to.equal(owner);
         });
 
@@ -82,7 +82,6 @@ contract('RskCrowdsale', async (accounts) => {
             let idx = 0;
             await time.increaseTo(this.starTime + time.duration.years(1) + time.duration.weeks(1));
             await this.rskCrowdsale.releaseEmployeeVesting(idx);
-            // console.log(await this.rskCrowdsale.releaseEmployeeVesting(idx));
             // expectEvent.inLogs(receipt.logs, 'TokensReleased', {
             //     token: this.token.address,
             //     amount: await this.token.balanceOf(eAddrs[idx]),
@@ -133,7 +132,7 @@ contract('RskCrowdsale', async (accounts) => {
 
             expect(await balanceOf(this.token, this.rskCrowdsale.address)).to.equal(before + eAmounts[idx] - vested);
 
-            await logAccount(this.token, this.rskCrowdsale);
+            await logAccount(this.token, accounts);
         });
 
     });
@@ -160,13 +159,13 @@ contract('RskCrowdsale', async (accounts) => {
             expect(await balanceOf(this.token, aAddrs[idx])).to.equal(0);
             expect(await balanceOf(this.token, aVesting0)).to.equal(aAmounts[idx]);
 
-            await time.increaseTo(this.startTime + time.duration.years(2));
+            await time.increase(time.duration.years(2) + time.duration.weeks(1));
+            // console.log(await time.latest(), this.starTime);
 
-            let vesting = TokenVesting.at(aVesting0);
-            await vesting.release(this.token);
-            // await this.rskCrowdsale.releaseAdvisorVesting(idx);
-            // expect(await balanceOf(this.token, aAddrs[idx])).to.equal(aAmounts[idx]);
-            // expect(await balanceOf(this.token, eVesting0)).to.equal(0);
+            await this.rskCrowdsale.releaseAdvisorVesting(idx);
+
+            expect(await balanceOf(this.token, aAddrs[idx])).to.equal(aAmounts[idx]);
+            expect(await balanceOf(this.token, aVesting0)).to.equal(0);
         });
     });
 

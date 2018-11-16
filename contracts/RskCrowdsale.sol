@@ -140,9 +140,10 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
      * @param _beneficiary The beneficiary of vesting
      * @param _amount The amount of tokens
      */
-    function createEmployeeVesting(address _beneficiary, uint256 _amount) internal returns (TokenVesting _vesting) {
-        _vesting = new TokenVesting(_beneficiary, startTime, ONE_YEAR_PERIOD, 4 * ONE_YEAR_PERIOD, true);
-        token.safeTransfer(_vesting, _amount);
+    function createEmployeeVesting(address _beneficiary, uint256 _amount) internal returns (TokenVesting) {
+        TokenVesting vesting = new TokenVesting(_beneficiary, startTime, ONE_YEAR_PERIOD, 4 * ONE_YEAR_PERIOD, true);
+        token.safeTransfer(vesting, _amount);
+        return vesting;
     }
 
     /**
@@ -150,9 +151,10 @@ contract RSKCrowdsale is Ownable, RskCrowdsaleConfig {
      * @param _beneficiary The beneficiary of vesting
      * @param _amount The amount of tokens
      */
-    function createAdvisorVesting(address _beneficiary, uint256 _amount) internal returns (TokenVesting _vesting) {
-        _vesting = new TokenVesting(_beneficiary, startTime, ONE_QUATER_PERIOD, 2 * ONE_YEAR_PERIOD, true);
-        token.safeTransfer(_vesting, _amount);
+    function createAdvisorVesting(address _beneficiary, uint256 _amount) internal returns (TokenVesting) {
+        TokenVesting vesting = new TokenVesting(_beneficiary, startTime, ONE_QUATER_PERIOD, 2 * ONE_YEAR_PERIOD, true);
+        token.safeTransfer(vesting, _amount);
+        return vesting;
     }
 
     function getEmployeeVesting(uint256 _vestId) verifyEmployeeIdx(_vestId) public view returns (TokenVesting) {
